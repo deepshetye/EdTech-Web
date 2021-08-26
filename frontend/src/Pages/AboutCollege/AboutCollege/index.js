@@ -5,11 +5,20 @@ import { Redirect } from "react-router-dom";
 
 const About = ({isAuthenticated}) => {
 
+  const fetchWithToken = async (token) =>
+  await fetch({
+    method: "GET",
+    headers: {
+      Authorization: `JWT ${token}`
+    }
+  }).then(response =>  response.json());
+  // console.log(response);
   
   let token = localStorage.getItem('access');
   
-  const { data, error } = useSWR(['/api/college-detail/', token], fetchWithToken)
-  
+  const { data, error } = useSWR([`${process.env.REACT_APP_BASE_URL}/api/college-detail/`, token], fetchWithToken)
+  const res = useSWR([`${process.env.REACT_APP_BASE_URL}/api/college-detail/`, token], fetchWithToken)
+  console.log(res)
   if (error) {
     return <div className="main_content_body">Error while Fetching...</div>;
   }
