@@ -13,7 +13,8 @@ const axiosInstance = axios.create({
 
 export const signupUser = (data) => axios.post(`https://edtech1.herokuapp.com/auth/users/`, data);
 
-export const loginUser = (data) => axios.post(`https://edtech1.herokuapp.com/auth/users/`, data);
+export const loginUser = (data) =>
+    axios.post(`https://edtech1.herokuapp.com/auth/jwt/create/`, data);
 
 export const getCollegeList = async () => {
     let result;

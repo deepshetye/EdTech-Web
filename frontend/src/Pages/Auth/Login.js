@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 // import { facebookLogin } from "../../helpers/facebook.js";
 import { Link, Redirect, useHistory } from "react-router-dom";
-import { FaFacebook, FaGithub, FaGooglePlus } from "react-icons/fa";
-import { AiFillTwitterCircle } from "react-icons/ai";
 import { connect } from "react-redux";
 import { login, signup } from "../../context/actions/auth.js";
 import { loginUser, signupUser } from "../../axios.js";
@@ -71,12 +69,17 @@ const Login = ({ login, signup }) => {
                             password: signUpFormData.password,
                             re_password: signUpFormData.re_password,
                         });
-                        await signup(res);
+                        await signup(res); // Storing in redux
                         setAccountCreated(true);
                         history.push("/check-email");
                         document.getElementById("sign-up-form").reset();
-                    } catch (e) {
-                        setError("Failed creating the account.");
+                    } catch (err) {
+                        {
+                            err.response.data.password && setError(err.response.data.password[0]);
+                        }
+                        {
+                            err.response.data.email && setError(err.response.data.email[0]);
+                        }
                     }
                 } else {
                     setError("Password doesn't match");
@@ -85,12 +88,16 @@ const Login = ({ login, signup }) => {
 
             case 6:
                 // Sign In
-                const res = await loginUser({
-                    email: signInFormData.email,
-                    password: signInFormData.password,
-                });
-                await login(res);
-                document.getElementById("sign-in-form").reset();
+                try {
+                    const res = await loginUser({
+                        email: signInFormData.email,
+                        password: signInFormData.password,
+                    });
+                    await login(res); // Storing in redux
+                    document.getElementById("sign-in-form").reset();
+                } catch (err) {
+                    setError(err.response.data.detail);
+                }
                 break;
 
             default:
@@ -158,13 +165,27 @@ const Login = ({ login, signup }) => {
                                     onChange={handleSignInChange}
                                 />
                             </div>
+                            {error && (
+                                <div style={{ color: "red", textAlign: "center" }}>{error}</div>
+                            )}
                             <button type='submit' className='btn'>
                                 Login
                             </button>
 
-                            <p className='social-text'>
+                            <p className='social-text' style={{ textAlign: "center" }}>
                                 Forgot Your Password?{" "}
-                                <Link to='/reset-password'>Reset Passwrod</Link>
+                                <Link
+                                    to='/reset-password'
+                                    style={{
+                                        textDecoration: "none",
+                                        cursor: "pointer",
+                                        color: "black",
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Reset Password
+                                </Link>
                             </p>
 
                             {/* <p className="social-text">Or Sign In with Social Platforms</p>
@@ -235,7 +256,9 @@ const Login = ({ login, signup }) => {
                                     onChange={handleSignUpChange}
                                 />
                             </div>
-                            {error && <div style={{ color: "red" }}>{error}</div>}
+                            {error && (
+                                <div style={{ color: "red", textAlign: "center" }}>{error}</div>
+                            )}
                             <input type='submit' className='btn' value='Sign up' />
 
                             {/* <p className="social-text">Or Sign Up with Social Platforms</p>

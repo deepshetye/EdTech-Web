@@ -152,21 +152,21 @@ export const check_authenticated = () => async (dispatch) => {
     }
 };
 
-export const login = (email, password) => async (dispatch) => {
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
+export const login = (res) => async (dispatch) => {
+    // const config = {
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //     },
+    // };
 
-    const body = JSON.stringify({ email, password });
+    // const body = JSON.stringify({ email, password });
 
     try {
-        const res = await axios.post(
-            `https://edtech1.herokuapp.com/auth/jwt/create/`,
-            body,
-            config
-        );
+        // const res = await axios.post(
+        //     `https://edtech1.herokuapp.com/auth/jwt/create/`,
+        //     body,
+        //     config
+        // );
 
         dispatch({
             type: LOGIN_SUCCESS,
